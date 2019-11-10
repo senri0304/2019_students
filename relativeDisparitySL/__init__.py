@@ -15,8 +15,6 @@ size = 5
 # Input line size in cm unit
 line_length = 0.7 # 30pix is 42 min of arc on 57cm distance
 
-line_width = 4 # pix
-
 # Input the disparity at pixel units.
 disparity = 4
 
@@ -24,12 +22,11 @@ disparity = 4
 s = 1
 
 # Input luminance of background
-lb = 153# 215, 84%
+lb = 85# 215, 84%
 
 # Input fixation point position in cm unit
 ecc = 1
 
-f = 0.023 # % relative size
 
 # Get display information
 display = pyglet.canvas.get_display()
@@ -41,18 +38,21 @@ c = (aspect_width**2 + aspect_height**2)**0.5
 d_height = 2.54 * (aspect_height / c) * inch
 
 sz = round(resolution * (size / d_height))
-ll = round(resolution * 1 / d_height)
+ll = round(resolution * line_length / d_height)
+f = round(sz*0.023/2) # % relative size
 
-distractor_x = [+4, 0, -4, -8]
-distractor_y = 10
+relative_disparity = distractor_x
+distractor_y = f*4
 
 eccentricity = round(1 / np.sqrt(2.0) * ecc / d_height * resolution)
 
 print(d_height)
 print(sz)
+print(ll)
+print(f)
 
 # Generate stereograms
-for k in distractor_x:
+for k in relative_disparity:
 
     # Two images prepare
     img = Image.new("RGB", (sz, sz), (lb, lb, lb))
@@ -62,40 +62,40 @@ for k in distractor_x:
     draw2 = ImageDraw.Draw(img2)
 
     # Fill the targets
-    draw.rectangle((int(sz / 2) - int(ll / 2) - disparity / 2, int(sz / 2) + int(line_width / 2),
-                    int(sz / 2) + int(ll / 2) - disparity / 2, int(sz / 2) - int(line_width / 2)),
+    draw.rectangle((int(sz / 2) - int(ll / 2) - disparity / 2, int(sz / 2) + int(f / 2),
+                    int(sz / 2) + int(ll / 2) - disparity / 2, int(sz / 2) - int(f / 2)),
                    fill=(0, 0, 0), outline=None)
-    draw2.rectangle((int(sz / 2) - int(ll / 2) + disparity / 2, int(sz / 2) + int(line_width / 2),
-                     int(sz / 2) + int(ll / 2) + disparity / 2, int(sz / 2) - int(line_width / 2)),
+    draw2.rectangle((int(sz / 2) - int(ll / 2) + disparity / 2, int(sz / 2) + int(f / 2),
+                     int(sz / 2) + int(ll / 2) + disparity / 2, int(sz / 2) - int(f / 2)),
                     fill=(0, 0, 0), outline=None)
 
-    draw.rectangle((int(sz / 2) - int(ll / 2) - k / 2, int(sz / 2) + int(line_width / 2) + distractor_y,
-                    int(sz / 2) + int(ll / 2) - k / 2, int(sz / 2) - int(line_width / 2) + distractor_y),
+    draw.rectangle((int(sz / 2) - int(ll / 2) - k / 2, int(sz / 2) + int(f / 2) + distractor_y,
+                    int(sz / 2) + int(ll / 2) - k / 2, int(sz / 2) - int(f / 2) + distractor_y),
                    fill=(0, 0, 0), outline=None)
-    draw2.rectangle((int(sz / 2) - int(ll / 2) + k / 2, int(sz / 2) + int(line_width / 2) + distractor_y,
-                     int(sz / 2) + int(ll / 2) + k / 2, int(sz / 2) - int(line_width / 2) + distractor_y),
+    draw2.rectangle((int(sz / 2) - int(ll / 2) + k / 2, int(sz / 2) + int(f / 2) + distractor_y,
+                     int(sz / 2) + int(ll / 2) + k / 2, int(sz / 2) - int(f / 2) + distractor_y),
                     fill=(0, 0, 0), outline=None)
 
-    draw.rectangle((int(sz / 2) - int(ll / 2) - k / 2, int(sz / 2) + int(line_width / 2) - distractor_y,
-                    int(sz / 2) + int(ll / 2) - k / 2, int(sz / 2) - int(line_width / 2) - distractor_y),
+    draw.rectangle((int(sz / 2) - int(ll / 2) - k / 2, int(sz / 2) + int(f / 2) - distractor_y,
+                    int(sz / 2) + int(ll / 2) - k / 2, int(sz / 2) - int(f / 2) - distractor_y),
                    fill=(0, 0, 0), outline=None)
-    draw2.rectangle((int(sz / 2) - int(ll / 2) + k / 2, int(sz / 2) + int(line_width / 2) - distractor_y,
-                     int(sz / 2) + int(ll / 2) + k / 2, int(sz / 2) - int(line_width / 2) - distractor_y),
+    draw2.rectangle((int(sz / 2) - int(ll / 2) + k / 2, int(sz / 2) + int(f / 2) - distractor_y,
+                     int(sz / 2) + int(ll / 2) + k / 2, int(sz / 2) - int(f / 2) - distractor_y),
                     fill=(0, 0, 0), outline=None)
 
     # fixation point
-    draw.rectangle((int(sz / 2) + eccentricity - sz*f, int(sz / 2) + eccentricity + f*3,
-                    int(sz / 2) + eccentricity + sz*f, int(sz / 2) + eccentricity - f*3),
+    draw.rectangle((int(sz / 2) + eccentricity - f, int(sz / 2) + eccentricity + f*3,
+                    int(sz / 2) + eccentricity + f, int(sz / 2) + eccentricity - f*3),
                    fill=(0, 0, 255), outline=None)
-    draw.rectangle((int(sz / 2) + eccentricity - f*3, int(sz / 2) + eccentricity + sz*f,
-                    int(sz / 2) + eccentricity + f*3, int(sz / 2) + eccentricity - sz*f),
+    draw.rectangle((int(sz / 2) + eccentricity - f*3, int(sz / 2) + eccentricity + f,
+                    int(sz / 2) + eccentricity + f*3, int(sz / 2) + eccentricity - f),
                    fill=(0, 0, 255), outline=None)
 
-    draw2.rectangle((int(sz / 2) + eccentricity - sz*f, int(sz / 2) + eccentricity + f*3,
-                    int(sz / 2) + eccentricity + sz*f, int(sz / 2) + eccentricity - f*3),
+    draw2.rectangle((int(sz / 2) + eccentricity - f, int(sz / 2) + eccentricity + f*3,
+                    int(sz / 2) + eccentricity + f, int(sz / 2) + eccentricity - f*3),
                     fill=(0, 0, 255), outline=None)
-    draw2.rectangle((int(sz / 2) + eccentricity - f*3, int(sz / 2) + eccentricity + sz*f,
-                    int(sz / 2) + eccentricity + f*3, int(sz / 2) + eccentricity - sz*f),
+    draw2.rectangle((int(sz / 2) + eccentricity - f*3, int(sz / 2) + eccentricity + f,
+                    int(sz / 2) + eccentricity + f*3, int(sz / 2) + eccentricity - f),
                     fill=(0, 0, 255), outline=None)
 
     # Write images
@@ -110,11 +110,11 @@ img = Image.new("RGB", (sz, sz), (lb, lb, lb))
 draw = ImageDraw.Draw(img)
 
 # fixation point
-draw.rectangle((int(sz / 2) + eccentricity - sz*f, int(sz / 2) + eccentricity + f*3,
-                int(sz / 2) + eccentricity + sz*f, int(sz / 2) + eccentricity - f*3),
+draw.rectangle((int(sz / 2) + eccentricity - f, int(sz / 2) + eccentricity + f*3,
+                int(sz / 2) + eccentricity + f, int(sz / 2) + eccentricity - f*3),
                fill=(0, 0, 255), outline=None)
-draw.rectangle((int(sz / 2) + eccentricity - f*3, int(sz / 2) + eccentricity + sz*f,
-                int(sz / 2) + eccentricity + f*3, int(sz / 2) + eccentricity - sz*f),
+draw.rectangle((int(sz / 2) + eccentricity - f*3, int(sz / 2) + eccentricity + f,
+                int(sz / 2) + eccentricity + f*3, int(sz / 2) + eccentricity - f),
                fill=(0, 0, 255), outline=None)
 
 to_dir = 'materials'
@@ -129,11 +129,11 @@ img.save(os.path.join(to_dir, basename), quality=100)
 
 #sin波
 #--------------------------------------------------------------------------------------------------------------------
-def create_wave(A,f0,fs,t, n):#A:振幅,f0:基本周波数,fs:サンプリング周波数,再生時間[s],n:名前
+def create_wave(A,f0,fs,t,name):#A:振幅,f0:基本周波数,fs:サンプリング周波数,再生時間[s],n:名前
     #nポイント
     #--------------------------------------------------------------------------------------------------------------------
     point = np.arange(0,fs*t)
-    sin_wave =A* np.sin(2*np.pi*f0*point/fs)
+    sin_wave = A* np.sin(2*np.pi*f0*point/fs)
 
     sin_wave = [int(x * 32767.0) for x in sin_wave]#16bit符号付き整数に変換
 
@@ -141,11 +141,11 @@ def create_wave(A,f0,fs,t, n):#A:振幅,f0:基本周波数,fs:サンプリング
     binwave = struct.pack("h" * len(sin_wave), *sin_wave)
 
     #サイン波をwavファイルとして書き出し
-    w = wave.Wave_write(os.path.join(to_dir, str(n) + ".wav"))
+    w = wave.Wave_write(os.path.join(to_dir, str(name) + ".wav"))
     p = (1, 2, fs, len(binwave), 'NONE', 'not compressed')#(チャンネル数(1:モノラル,2:ステレオ)、サンプルサイズ(バイト)、サンプリング周波数、フレーム数、圧縮形式(今のところNONEのみ)、圧縮形式を人に判読可能な形にしたもの？通常、 'NONE' に対して 'not compressed' が返されます。)
     w.setparams(p)
     w.writeframes(binwave)
     w.close()
 
-create_wave(1, 44100, 460, 1, '460Hz')
-create_wave(1, 44100, 840, 0.1, '840Hz')
+create_wave(1, 460, 44100, 1.0, '460Hz')
+create_wave(1, 840, 44100, 0.1, '840Hz')

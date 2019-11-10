@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
-import sys, os, pyglet, time, datetime, random, copy
+import os, pyglet, time, datetime, random, copy
 from pyglet.gl import *
 from pyglet.image import AbstractImage
 from collections import deque
 import pandas as pd
 import numpy as np
 import display_info
-from __init__ import distractor_x
-
-
-if os.path.isdir('materials'):
-    pass
-else:
-    __init__()
 
 # Prefernce
 # ------------------------------------------------------------------------
-relative_disparity = distractor_x
-rept = 5
+relative_disparity = display_info.distractor_x
+rept = 1
 exclude_mousePointer = False
 # ------------------------------------------------------------------------
 
@@ -25,7 +18,7 @@ exclude_mousePointer = False
 display = pyglet.canvas.get_display()
 screens = display.get_screens()
 win = pyglet.window.Window(style=pyglet.window.Window.WINDOW_STYLE_BORDERLESS)
-win.set_fullscreen(fullscreen=False, screen=screens[len(screens)-1])  # Present secondary display
+win.set_fullscreen(fullscreen=True, screen=screens[len(screens)-1])  # Present secondary display
 win.set_exclusive_mouse(exclude_mousePointer)  # Exclude mouse pointer
 key = pyglet.window.key
 
@@ -34,7 +27,7 @@ deg1 = display_info.deg1
 cntx = screens[len(screens)-1].width / 2  # Store center of screen about x position
 cnty = screens[len(screens)-1].height / 3  # Store center of screen about y position
 dat = pd.DataFrame()
-iso = 7
+iso = 8
 draw_objects = []  # 描画対象リスト
 end_routine = False  # Routine status to be exitable or not
 tc = 0  # Count transients
