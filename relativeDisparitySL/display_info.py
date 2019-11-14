@@ -8,7 +8,7 @@ inch = 23
 aspect_width = 16
 aspect_height = 9
 
-distractor_x = [+4, 0, -4, -8]
+distractor_x = [+4, 0, -4, -8, 2000]
 
 
 # Get display information

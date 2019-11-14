@@ -9,7 +9,7 @@ aspect_width = 16
 aspect_height = 9
 
 # Input a variety
-variation = [0, 0.125, 0.25, 0.5, 0.75]
+variation = [0.125, 0.25, 0.375, 0.5, 0.75]
 
 
 # Get display information

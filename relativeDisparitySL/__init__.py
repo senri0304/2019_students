@@ -64,10 +64,10 @@ for k in relative_disparity:
     # Fill the targets
     draw.rectangle((int(sz / 2) - int(ll / 2) - disparity / 2, int(sz / 2) + int(f / 2),
                     int(sz / 2) + int(ll / 2) - disparity / 2, int(sz / 2) - int(f / 2)),
-                   fill=(0, 0, 0), outline=None)
+                   fill=(255, lb, lb), outline=None)
     draw2.rectangle((int(sz / 2) - int(ll / 2) + disparity / 2, int(sz / 2) + int(f / 2),
                      int(sz / 2) + int(ll / 2) + disparity / 2, int(sz / 2) - int(f / 2)),
-                    fill=(0, 0, 0), outline=None)
+                    fill=(255, 0, 0), outline=None)
 
     draw.rectangle((int(sz / 2) - int(ll / 2) - k / 2, int(sz / 2) + int(f / 2) + distractor_y,
                     int(sz / 2) + int(ll / 2) - k / 2, int(sz / 2) - int(f / 2) + distractor_y),

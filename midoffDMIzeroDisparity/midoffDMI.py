@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, pyglet, time, datetime, random, copy
+import os, pyglet, time, datetime, random, copy, math
 from pyglet.gl import *
 from pyglet.image import AbstractImage
 from collections import deque
@@ -9,12 +9,11 @@ import display_info
 
 # Prefernce
 # ------------------------------------------------------------------------
-relative_disparity = display_info.distractor_x
 rept = 5
 exclude_mousePointer = False
 # ------------------------------------------------------------------------
 
-# Get display informations
+# Get display information
 display = pyglet.canvas.get_display()
 screens = display.get_screens()
 win = pyglet.window.Window(style=pyglet.window.Window.WINDOW_STYLE_BORDERLESS)
@@ -46,7 +45,10 @@ pedestal: AbstractImage = pyglet.image.load('materials/pedestal.png')
 fixr = pyglet.sprite.Sprite(pedestal, x=cntx+iso*deg1-pedestal.width/2.0, y=cnty-pedestal.height/2.0)
 fixl = pyglet.sprite.Sprite(pedestal, x=cntx-iso*deg1-pedestal.width/2.0, y=cnty-pedestal.height/2.0)
 
-file_names = copy.copy(relative_disparity)*rept
+file_names = copy.copy(display_info.variation)*rept*2
+crs_uncrs = [int(1), int(-1)]*int(len(file_names)/2)
+r = random.randint(0, math.factorial(len(file_names)))
+random.seed(r)
 sequence = random.sample(file_names, len(file_names))
 print(sequence)
 
@@ -136,17 +138,17 @@ def get_results(dt):
     d = np.std(kud)
     mdt.append(m)
     dtstd.append(d)
-    print("--------------------------------------------------")
-    print("trial: " + str(n) + "/" + str(len(file_names)))
-    print("start: " + str(trial_start))
-    print("end: " + str(trial_end))
-    print("key_pressed: " + str(kud))
-    print("transient counts: " + str(tc))
-    print("cdt: " + str(c))
-    print("mdt: " + str(m))
-    print("dtstd: " + str(d))
-    print("condition: " + str(sequence[n - 1]))
-    print("--------------------------------------------------")
+    print('--------------------------------------------------')
+    print('trial: ' + str(n) + '/' + str(len(file_names)))
+    print('start: ' + str(trial_start))
+    print('end: ' + str(trial_end))
+    print('key_pressed: ' + str(kud))
+    print('transient counts: ' + str(tc))
+    print('cdt: ' + str(c))
+    print('mdt: ' + str(m))
+    print('dtstd: ' + str(d))
+    print('condition: ' + str(sequence[n-1]))
+    print('--------------------------------------------------')
     # Check the experiment continue or break
     if n != len(file_names):
         pyglet.clock.schedule_once(exit_routine, 29.0)
@@ -157,11 +159,11 @@ def get_results(dt):
 def set_polygon():
     global L, R, sequence, n
     # Set up polygon for stimulus
-    R = pyglet.resource.image('stereograms/ls' + str(sequence[n]) + 'R.png')
+    R = pyglet.resource.image('stereograms/ds' + str(sequence[n]) + '.png')
     R = pyglet.sprite.Sprite(R)
     R.x = cntx + deg1 * iso - R.width / 2.0
     R.y = cnty - R.height / 2.0
-    L = pyglet.resource.image('stereograms/ls' + str(sequence[n]) + 'L.png')
+    L = pyglet.resource.image('stereograms/ls.png')
     L = pyglet.sprite.Sprite(L)
     L.x = cntx - deg1 * iso - L.width / 2.0
     L.y = cnty - L.height / 2.0
@@ -201,8 +203,8 @@ end_time = time.time()
 daten = datetime.datetime.now()
 
 # Write results onto csv
-results = pd.DataFrame({'trial': sequence,  # Store variance_A conditions
-                        'image': n,
+results = pd.DataFrame({'trial': list(range(1, len(file_names)+1)),  # Store variance_A conditions
+                        'midoff': sequence,
                         'transient_counts': tcs,  # Store transient_counts
                         'cdt': cdt,  # Store cdt(target values) and input number of trials
                         'mdt': mdt,

@@ -161,7 +161,7 @@ def get_results(dt):
 def set_polygon():
     global L, R, sequence, n
     # Set up polygon for stimulus
-    R = pyglet.resource.image('stereograms/' + str(sequence2[n]) + 'ds' + str(sequence[n]) + '.png')
+    R = pyglet.resource.image('stereograms/ds' + str(sequence[n]) + '.png')
     R = pyglet.sprite.Sprite(R)
     R.x = cntx + deg1 * iso * -sequence2[n] - R.width / 2.0
     R.y = cnty - R.height / 2.0

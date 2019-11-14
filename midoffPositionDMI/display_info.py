@@ -4,9 +4,9 @@
 import pyglet.canvas
 
 # Input display information
-inch = 12
+inch = 23
 aspect_width = 16
-aspect_height = 10
+aspect_height = 9
 
 # Input a variety
 variation = [0, 0.1, 0.2, 0.3, 0.4]
